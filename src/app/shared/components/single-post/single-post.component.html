@@ -299,35 +299,35 @@
   @if (post.sharedPost || post.sharedPostUnavailable) {
     <div class="mx-4 mb-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
       @if (post.sharedPost; as originalPost) {
+        @let originalUser = originalPost.user;
+        @let originalUsername = originalUser?.username;
         <div class="p-3">
           <div class="mb-3 flex items-center gap-2">
             <a
-              [routerLink]="authorRoute(originalPost.user?._id)"
+              [routerLink]="authorRoute(originalUser?._id)"
               [attr.aria-label]="
-                'View ' + (originalPost.user?.name || 'original post author') + ' profile'
+                'View ' + (originalUser?.name || 'original post author') + ' profile'
               "
               class="shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877f2] focus-visible:ring-offset-2"
             >
               <img
-                [src]="originalPost.user?.photo || '/assets/images/default-profile.png'"
-                [alt]="originalPost.user?.name || 'Original post author'"
+                [src]="originalUser?.photo || '/assets/images/default-profile.png'"
+                [alt]="originalUser?.name || 'Original post author'"
                 class="h-9 w-9 rounded-full border border-slate-200 object-cover"
               />
             </a>
             <div class="min-w-0">
               <a
-                [routerLink]="authorRoute(originalPost.user?._id)"
+                [routerLink]="authorRoute(originalUser?._id)"
                 [attr.aria-label]="
-                  'View ' + (originalPost.user?.name || 'original post author') + ' profile'
+                  'View ' + (originalUser?.name || 'original post author') + ' profile'
                 "
                 class="block truncate rounded-sm text-sm font-bold text-slate-900 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877f2]"
               >
-                {{ originalPost.user?.name || 'Unknown user' }}
+                {{ originalUser?.name || 'Unknown user' }}
               </a>
               <p class="truncate text-xs text-slate-500">
-                {{
-                  originalPost.user?.username ? '@' + originalPost.user?.username : 'Original post'
-                }}
+                {{ originalUsername ? '@' + originalUsername : 'Original post' }}
               </p>
             </div>
             <a
@@ -348,7 +348,7 @@
         @if (originalPost.image) {
           <img
             [src]="originalPost.image"
-            [alt]="(originalPost.user?.name || 'Original user') + ' shared post'"
+            [alt]="(originalUser?.name || 'Original user') + ' shared post'"
             class="max-h-[560px] w-full border-t border-slate-200 object-cover"
           />
         }
