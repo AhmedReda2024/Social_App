@@ -1,0 +1,461 @@
+<div class="min-h-screen bg-[#f0f2f5] flex items-center justify-center p-4 sm:p-8 font-sans">
+  <div
+    class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center lg:items-stretch gap-10 lg:gap-16"
+  >
+    <!-- Left Side: Branding & Info -->
+    <div class="lg:w-1/2 flex flex-col justify-center pt-8 lg:pt-0">
+      <h1 class="text-[#0d2a54] text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight">Vibely</h1>
+      <p class="text-slate-700 text-2xl lg:text-[1.7rem] leading-tight mb-8 font-medium">
+        Connect, share, and belong with Vibely.
+      </p>
+
+      <div class="bg-white rounded-2xl p-8 border border-slate-200/60 shadow-sm mt-4">
+        <h3 class="text-[#0d2a54] text-xs font-bold tracking-widest uppercase mb-3">
+          About Vibely
+        </h3>
+        <h2 class="text-xl font-extrabold text-slate-900 mb-4">Your space to connect and share</h2>
+        <p class="text-slate-500 text-sm leading-relaxed mb-6">
+          Vibely brings people together to share moments, discover communities, and build meaningful
+          connections.
+        </p>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div class="bg-[#f2f5f9] border border-[#e2e8f0] rounded-xl p-4">
+            <div class="text-[#0d2a54] font-extrabold text-xl mb-1">Share</div>
+            <div class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Moments</div>
+          </div>
+          <div class="bg-[#f2f5f9] border border-[#e2e8f0] rounded-xl p-4">
+            <div class="text-[#0d2a54] font-extrabold text-xl mb-1">Connect</div>
+            <div class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Friends</div>
+          </div>
+          <div class="bg-[#f2f5f9] border border-[#e2e8f0] rounded-xl p-4">
+            <div class="text-[#0d2a54] font-extrabold text-xl mb-1">Discover</div>
+            <div class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+              Communities
+            </div>
+          </div>
+          <div class="bg-[#f2f5f9] border border-[#e2e8f0] rounded-xl p-4 col-span-1">
+            <div class="text-[#0d2a54] font-extrabold text-xl mb-1">Chat</div>
+            <div class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+              Conversations
+            </div>
+          </div>
+          <div class="bg-[#f2f5f9] border border-[#e2e8f0] rounded-xl p-4 col-span-2">
+            <div class="text-[#0d2a54] font-extrabold text-xl mb-1">Belong</div>
+            <div class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+              Be yourself
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side: Register Form Card -->
+    <div class="lg:w-[480px] w-full shrink-0">
+      <div class="bg-white rounded-[1.25rem] shadow-xl p-6 sm:p-8">
+        <!-- Toggle Switch -->
+        <div class="bg-[#f0f2f5] rounded-xl p-1 flex mb-8">
+          <a
+            routerLink="/login"
+            class="flex-1 text-center py-2.5 rounded-lg text-slate-600 font-semibold text-sm transition-colors hover:text-slate-800"
+          >
+            Login
+          </a>
+          <div
+            class="flex-1 bg-white text-[#0d2a54] shadow-sm rounded-lg text-center py-2.5 font-bold text-sm cursor-default"
+          >
+            Register
+          </div>
+        </div>
+
+        <h2 class="text-[1.75rem] font-bold text-[#0d2a54] mb-1 leading-tight">
+          Create a new account
+        </h2>
+        <p class="text-slate-500 text-sm mb-6">It is quick and easy.</p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="sendRegisterForm()" class="space-y-4">
+          <!-- Name -->
+
+          <div>
+            <!-- Control -->
+            @let nameControl = registerForm.get('name');
+
+            <div class="relative">
+              <span
+                class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-user"
+                  aria-hidden="true"
+                >
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </span>
+
+              <input
+                [class.border-rose-300]="nameControl?.invalid && nameControl?.touched"
+                [class.focus:border-rose-400]="nameControl?.invalid && nameControl?.touched"
+                placeholder="Full name"
+                class="main-input"
+                type="text"
+                id="nameInput"
+                formControlName="name"
+              />
+            </div>
+            @if (nameControl?.errors && nameControl?.touched) {
+              <p class="mt-1 text-xs font-semibold text-rose-600 flex flex-wrap flex-col">
+                @if (nameControl?.getError('required')) {
+                  <span>Full name is required.</span>
+                } @else if (nameControl?.getError('minlength')) {
+                  <span>Name must be at least 2 characters.</span>
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Username -->
+
+          <div>
+            <div class="relative">
+              <span
+                class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-user"
+                  aria-hidden="true"
+                >
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </span>
+
+              <input
+                placeholder="Username (optional)"
+                class="main-input"
+                id="userNameInput"
+                type="text"
+                formControlName="username"
+              />
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div>
+            <div class="relative">
+              <!-- Control -->
+              @let emailControl = registerForm.get('email');
+
+              <span
+                class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-at-sign"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="4"></circle>
+                  <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"></path>
+                </svg>
+              </span>
+              <input
+                [class.border-rose-300]="emailControl?.invalid && emailControl?.touched"
+                [class.focus:border-rose-400]="emailControl?.invalid && emailControl?.touched"
+                placeholder="Email address"
+                class="main-input"
+                id="emailInput"
+                type="email"
+                formControlName="email"
+              />
+            </div>
+
+            @if (emailControl?.errors && emailControl?.touched) {
+              <p class="mt-1 text-xs font-semibold text-rose-600 flex flex-wrap flex-col">
+                @if (emailControl?.getError('required')) {
+                  <span>Full name is required.</span>
+                } @else if (emailControl?.getError('pattern')) {
+                  <span>Please enter a valid email address.</span>
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Gender -->
+
+          <div>
+            <div class="relative">
+              <!-- Control -->
+              @let genderControl = registerForm.get('gender');
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-users pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                aria-hidden="true"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+              </svg>
+              <select
+                id="genderInput"
+                class="main-input"
+                [class.border-rose-300]="genderControl?.invalid && genderControl?.touched"
+                [class.focus:border-rose-400]="genderControl?.invalid && genderControl?.touched"
+                formControlName="gender"
+              >
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+
+            @if (genderControl?.errors && genderControl?.touched) {
+              <p class="mt-1 text-xs font-semibold text-rose-600 flex flex-wrap flex-col">
+                @if (genderControl?.getError('required')) {
+                  <span>Gender is required.</span>
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Date -->
+
+          <div>
+            <div class="relative">
+              <!-- Control -->
+              @let dateControl = registerForm.get('dateOfBirth');
+
+              <span
+                class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-calendar"
+                  aria-hidden="true"
+                >
+                  <path d="M8 2v4"></path>
+                  <path d="M16 2v4"></path>
+                  <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                  <path d="M3 10h18"></path>
+                </svg>
+              </span>
+              <input
+                placeholder="Date of birth"
+                class="main-input"
+                id="dateInput"
+                type="date"
+                formControlName="dateOfBirth"
+                [class.border-rose-300]="dateControl?.invalid && dateControl?.touched"
+                [class.focus:border-rose-400]="dateControl?.invalid && dateControl?.touched"
+              />
+            </div>
+
+            @if (dateControl?.errors && dateControl?.touched) {
+              <p class="mt-1 text-xs font-semibold text-rose-600 flex flex-wrap flex-col">
+                @if (dateControl?.getError('required')) {
+                  <span>Date of birth is required.</span>
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Password -->
+
+          <div>
+            <div class="relative">
+              <!-- Control -->
+              @let passwordControl = registerForm.get('password');
+
+              <span
+                class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-key-round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
+                  ></path>
+                  <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+                </svg>
+              </span>
+              <input
+                id="passwordInput"
+                class="main-input"
+                [class.border-rose-300]="passwordControl?.invalid && passwordControl?.touched"
+                [class.focus:border-rose-400]="passwordControl?.invalid && passwordControl?.touched"
+                type="password"
+                placeholder="Password"
+                name="password"
+                formControlName="password"
+              />
+            </div>
+
+            @if (passwordControl?.errors && passwordControl?.touched) {
+              <p class="mt-1 text-xs font-semibold text-rose-600 flex flex-wrap flex-col">
+                @if (passwordControl?.getError('required')) {
+                  <span>Password is required.</span>
+                } @else if (passwordControl?.getError('pattern')) {
+                  <span
+                    >Password must include uppercase, lowercase, number, and special
+                    character.</span
+                  >
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Confirm Password -->
+
+          <div>
+            <div class="relative">
+              <!-- Control -->
+              @let rePasswordControl = registerForm.get('rePassword');
+
+              <span
+                class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-key-round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
+                  ></path>
+                  <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+                </svg>
+              </span>
+              <input
+                class="main-input"
+                [class.border-rose-300]="
+                  (rePasswordControl?.invalid || registerForm.hasError('mismatch')) &&
+                  rePasswordControl?.touched
+                "
+                [class.focus:border-rose-400]="
+                  (rePasswordControl?.invalid || registerForm.hasError('mismatch')) &&
+                  rePasswordControl?.touched
+                "
+                id="rePasswordInput"
+                type="password"
+                placeholder="Confirm password"
+                name="rePassword"
+                formControlName="rePassword"
+              />
+            </div>
+
+            @if (
+              (rePasswordControl?.invalid || registerForm.hasError('mismatch')) &&
+              rePasswordControl?.touched
+            ) {
+              <p class="mt-1 text-xs font-semibold text-rose-600 flex flex-wrap flex-col">
+                @if (rePasswordControl?.hasError('required')) {
+                  <span>Confirm password is required.</span>
+                } @else if (registerForm.hasError('mismatch')) {
+                  <span>Passwords do not match.</span>
+                }
+              </p>
+            }
+          </div>
+
+          @if (errorMessage()) {
+            <div
+              class="flex items-center gap-3 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-sm font-medium animate-error-fade-in"
+              role="alert"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="shrink-0 text-rose-500 animate-pulse"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span>{{ errorMessage() }}</span>
+            </div>
+          }
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="main-btn flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            [disabled]="isLoading()"
+          >
+            @if (isLoading()) {
+              <i class="fa-solid fa-circle-notch animate-spin"></i>
+              Signing Up...
+            } @else {
+              Sign Up
+            }
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

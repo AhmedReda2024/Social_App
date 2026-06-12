@@ -1,0 +1,128 @@
+<section class="suggestions-page">
+  <div class="suggestions-shell">
+    <a routerLink="/feed" class="back-to-feed">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+      <span>Back to feed</span>
+    </a>
+
+    <section class="suggestions-panel" aria-labelledby="suggestions-title">
+      <header class="suggestions-header">
+        <div class="suggestions-title-wrap">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M19 8v6"></path>
+            <path d="M22 11h-6"></path>
+          </svg>
+          <h1 id="suggestions-title">All Suggested Friends</h1>
+        </div>
+        <span class="suggestions-count" data-suggestions-count>
+          {{ filteredSuggestions().length }}
+        </span>
+      </header>
+
+      <label class="suggestions-search">
+        <span class="sr-only">Search suggested friends</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m21 21-4.34-4.34"></path>
+          <circle cx="11" cy="11" r="8"></circle>
+        </svg>
+        <input
+          type="search"
+          data-suggestions-search
+          placeholder="Search by name or username..."
+          [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)"
+        />
+      </label>
+
+      @if (isLoading()) {
+        <div class="suggestions-grid" aria-label="Loading suggestions">
+          @for (row of [1, 2, 3, 4, 5, 6]; track row) {
+            <div class="suggestion-skeleton" data-suggestion-skeleton>
+              <div class="skeleton-avatar"></div>
+              <div class="skeleton-lines">
+                <span></span>
+                <span></span>
+              </div>
+              <div class="skeleton-button"></div>
+            </div>
+          }
+        </div>
+      } @else if (loadError()) {
+        <div class="suggestions-state" role="alert">
+          <i class="fa-solid fa-user-group text-3xl text-slate-300" aria-hidden="true"></i>
+          <h2>We couldn't load suggestions</h2>
+          <p>Please check your connection and try again.</p>
+          <button type="button" data-suggestions-retry (click)="loadSuggestions()">
+            Try again
+          </button>
+        </div>
+      } @else if (suggestions().length === 0) {
+        <div class="suggestions-state">
+          <i class="fa-solid fa-user-check text-3xl text-blue-300" aria-hidden="true"></i>
+          <h2>No suggestions available</h2>
+          <p>You're all caught up for now.</p>
+        </div>
+      } @else if (filteredSuggestions().length === 0) {
+        <div class="suggestions-state">
+          <i class="fa-solid fa-magnifying-glass text-3xl text-slate-300" aria-hidden="true"></i>
+          <h2>No suggestions match your search</h2>
+          <p>Try another name or username.</p>
+        </div>
+      } @else {
+        <div class="suggestions-grid">
+          @for (suggestion of filteredSuggestions(); track suggestion._id) {
+            <app-suggestion-card
+              [suggestion]="suggestion"
+              variant="full"
+              (followed)="onSuggestionFollowed($event)"
+            />
+          }
+        </div>
+      }
+
+      @if (!isLoading() && !loadError() && suggestions().length > 0 && hasMore()) {
+        <div class="load-more-wrap">
+          <button
+            type="button"
+            class="load-more-users"
+            data-load-more-users
+            [disabled]="isLoadingMore()"
+            (click)="loadMoreSuggestions()"
+          >
+            @if (isLoadingMore()) {
+              <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+              <span>Loading users...</span>
+            } @else {
+              <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+              <span>Load more users</span>
+            }
+          </button>
+        </div>
+      }
+    </section>
+  </div>
+</section>

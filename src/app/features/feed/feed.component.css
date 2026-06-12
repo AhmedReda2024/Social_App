@@ -1,0 +1,11 @@
+textarea {
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+button {
+  transition: transform 0.1s ease-in-out, background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+button:active {
+  transform: scale(0.97);
+}

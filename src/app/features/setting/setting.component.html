@@ -1,0 +1,148 @@
+<main class="settings-page">
+  <section class="password-card" aria-labelledby="change-password-title">
+    <header class="password-card__header">
+      <div class="password-card__icon" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
+          ></path>
+          <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+        </svg>
+      </div>
+      <div>
+        <h1 id="change-password-title">Change Password</h1>
+        <p>Keep your account secure by using a strong password.</p>
+      </div>
+    </header>
+
+    <form [formGroup]="changePasswordForm" (ngSubmit)="submit()" novalidate>
+      @let currentPassword = changePasswordForm.controls.password;
+      @let newPassword = changePasswordForm.controls.newPassword;
+      @let confirmPassword = changePasswordForm.controls.confirmPassword;
+
+      <div class="password-field">
+        <label for="current-password">Current password</label>
+        <input
+          id="current-password"
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          placeholder="Enter current password"
+          [class.is-invalid]="currentPassword.invalid && currentPassword.touched"
+          [attr.aria-invalid]="currentPassword.invalid && currentPassword.touched"
+          [attr.aria-describedby]="
+            currentPassword.invalid && currentPassword.touched ? 'current-password-error' : null
+          "
+        />
+        @if (currentPassword.invalid && currentPassword.touched) {
+          <p id="current-password-error" class="field-error">Current password is required.</p>
+        }
+      </div>
+
+      <div class="password-field">
+        <label for="new-password">New password</label>
+        <input
+          id="new-password"
+          type="password"
+          formControlName="newPassword"
+          autocomplete="new-password"
+          placeholder="Enter new password"
+          [class.is-invalid]="
+            (newPassword.invalid || changePasswordForm.hasError('passwordUnchanged')) &&
+            newPassword.touched
+          "
+          [attr.aria-invalid]="
+            (newPassword.invalid || changePasswordForm.hasError('passwordUnchanged')) &&
+            newPassword.touched
+          "
+          aria-describedby="password-requirements new-password-error"
+        />
+        <p id="password-requirements" class="field-help">
+          At least 8 characters with uppercase, lowercase, number, and special character.
+        </p>
+        @if (
+          (newPassword.invalid || changePasswordForm.hasError('passwordUnchanged')) &&
+          newPassword.touched
+        ) {
+          <p id="new-password-error" class="field-error">
+            @if (newPassword.hasError('required')) {
+              New password is required.
+            } @else if (changePasswordForm.hasError('passwordUnchanged')) {
+              New password must be different from your current password.
+            } @else {
+              Enter a password that meets all security requirements.
+            }
+          </p>
+        }
+      </div>
+
+      <div class="password-field">
+        <label for="confirm-password">Confirm new password</label>
+        <input
+          id="confirm-password"
+          type="password"
+          formControlName="confirmPassword"
+          autocomplete="new-password"
+          placeholder="Re-enter new password"
+          [class.is-invalid]="
+            (confirmPassword.invalid || changePasswordForm.hasError('passwordMismatch')) &&
+            confirmPassword.touched
+          "
+          [attr.aria-invalid]="
+            (confirmPassword.invalid || changePasswordForm.hasError('passwordMismatch')) &&
+            confirmPassword.touched
+          "
+          [attr.aria-describedby]="
+            (confirmPassword.invalid || changePasswordForm.hasError('passwordMismatch')) &&
+            confirmPassword.touched
+              ? 'confirm-password-error'
+              : null
+          "
+        />
+        @if (
+          (confirmPassword.invalid || changePasswordForm.hasError('passwordMismatch')) &&
+          confirmPassword.touched
+        ) {
+          <p id="confirm-password-error" class="field-error">
+            @if (confirmPassword.hasError('required')) {
+              Please confirm your new password.
+            } @else {
+              Passwords do not match.
+            }
+          </p>
+        }
+      </div>
+
+      @if (successMessage()) {
+        <div class="success-message" role="status" aria-live="polite">
+          <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+          <span>{{ successMessage() }}</span>
+        </div>
+      }
+
+      <button
+        type="submit"
+        class="update-password-button"
+        data-update-password
+        [disabled]="isSubmitting()"
+      >
+        @if (isSubmitting()) {
+          <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+          <span>Updating password...</span>
+        } @else {
+          <span>Update password</span>
+        }
+      </button>
+    </form>
+  </section>
+</main>

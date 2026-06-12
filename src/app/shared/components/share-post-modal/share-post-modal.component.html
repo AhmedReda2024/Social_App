@@ -1,0 +1,102 @@
+<div
+  class="share-modal-backdrop animate-fade-in"
+  (click)="onBackdropClick($event)"
+  role="presentation"
+>
+  <section
+    class="share-modal-dialog animate-zoom-in"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="share-post-title"
+    [attr.aria-busy]="isSharing()"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="share-modal-header">
+      <h2 id="share-post-title">Share post</h2>
+      <button
+        type="button"
+        class="share-modal-close"
+        aria-label="Close share post dialog"
+        [disabled]="isSharing()"
+        (click)="close()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+    </header>
+
+    <div class="share-modal-content">
+      <label class="sr-only" for="share-message">Add a message</label>
+      <textarea
+        id="share-message"
+        rows="4"
+        maxlength="1000"
+        placeholder="Say something about this..."
+        [value]="message()"
+        [disabled]="isSharing()"
+        (input)="message.set($any($event.target).value)"
+      ></textarea>
+
+      <article class="share-post-preview" aria-label="Post being shared">
+        <div class="share-post-author">
+          <img
+            [src]="post.user.photo || '/assets/images/default-profile.png'"
+            [alt]="post.user.name"
+          />
+          <div>
+            <p>{{ post.user.name }}</p>
+            <span>{{
+              post.user.username.startsWith('@') ? post.user.username : '@' + post.user.username
+            }}</span>
+          </div>
+        </div>
+
+        @if (post.body) {
+          <p class="share-post-body">{{ post.body }}</p>
+        }
+
+        @if (post.image) {
+          <img class="share-post-image" [src]="post.image" [alt]="post.user.name + ' post'" />
+        }
+      </article>
+    </div>
+
+    <footer class="share-modal-footer">
+      <button
+        type="button"
+        class="share-cancel-button"
+        data-share-cancel
+        [disabled]="isSharing()"
+        (click)="close()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="share-submit-button"
+        data-share-submit
+        [disabled]="isSharing()"
+        (click)="submit()"
+      >
+        @if (isSharing()) {
+          <i class="fa-solid fa-circle-notch animate-spin text-sm" aria-hidden="true"></i>
+          <span>Sharing...</span>
+        } @else {
+          <span>Share now</span>
+        }
+      </button>
+    </footer>
+  </section>
+</div>

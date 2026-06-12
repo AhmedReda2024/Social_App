@@ -1,0 +1,14 @@
+<div class="mx-auto max-w-7xl px-3 py-3.5">
+  <main class="min-w-0">
+    <div class="grid gap-4 xl:grid-cols-[240px_minmax(0,1fr)_300px]">
+      <!-- Left Column: SideNavBar (Desktop Only) -->
+      <app-sidebar class="hidden h-fit space-y-3 xl:sticky xl:top-[84px] xl:block" />
+
+      <!-- Center Column: Social Feed -->
+      <app-create-post class="space-y-4 min-w-0 block" />
+
+      <!-- Right Column: Trending & Suggested -->
+      <app-suggested-friends class="hidden h-fit xl:sticky xl:top-[84px] xl:block" />
+    </div>
+  </main>
+</div>

@@ -1,6 +1,10 @@
-# SocialApp
+# Vibely
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.2.
+A modern Angular social media application with authentication, a dynamic posts feed, user
+profiles, notifications, suggestions, post details, and a responsive interface.
+
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version
+21.2.2.
 
 ## Development server
 

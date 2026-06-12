@@ -1,0 +1,29 @@
+@reference "../../../styles.css";
+
+.public-profile-state {
+  @apply flex min-h-80 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white px-6 text-center shadow-sm;
+}
+
+.public-profile-primary {
+  @apply inline-flex min-h-10 items-center justify-center rounded-xl bg-[#1877f2] px-5 text-sm font-bold text-white transition hover:bg-[#166fe5];
+}
+
+.public-profile-follow-button {
+  @apply inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#1877f2] px-5 text-sm font-extrabold text-white transition hover:bg-[#166fe5] disabled:cursor-wait disabled:opacity-70 sm:w-auto;
+}
+
+.public-profile-following {
+  @apply border border-slate-300 bg-white text-slate-700 hover:bg-slate-100;
+}
+
+.public-profile-stat {
+  @apply flex min-h-24 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-2 text-center;
+}
+
+.public-profile-stat span {
+  @apply text-[10px] font-extrabold uppercase tracking-wide text-slate-500 sm:text-xs;
+}
+
+.public-profile-stat strong {
+  @apply mt-2 text-2xl font-black text-slate-950 sm:text-3xl;
+}

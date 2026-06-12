@@ -1,0 +1,19 @@
+<!-- navbar -->
+<app-navbar />
+
+<router-outlet />
+
+<!-- footer -->
+
+<ngx-spinner bdColor="rgba(15, 23, 42, 0.25)" [fullScreen]="true">
+  <div
+    class="flex items-center gap-3 px-6 py-3.5 rounded-full bg-white shadow-xl border border-slate-200/80 font-inter"
+  >
+    <div
+      class="w-5 h-5 rounded-full border-2 border-slate-100 border-t-[#1877f2] animate-spin"
+    ></div>
+    <span class="text-[14px] font-bold text-slate-700 select-none">
+      Refreshing your timeline...
+    </span>
+  </div>
+</ngx-spinner>

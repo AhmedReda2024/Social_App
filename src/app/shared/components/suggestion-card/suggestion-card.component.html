@@ -1,0 +1,55 @@
+<article
+  class="suggestion-card"
+  [class.suggestion-card-compact]="variant === 'compact'"
+  [class.suggestion-card-full]="variant === 'full'"
+>
+  <div class="suggestion-card-main">
+    <a
+      [routerLink]="['/profile', suggestion._id]"
+      [attr.aria-label]="'View ' + suggestion.name + ' profile'"
+      class="suggestion-avatar-link"
+    >
+      <img
+        [src]="suggestion.photo || '/assets/images/default-profile.png'"
+        [alt]="suggestion.name"
+        (error)="onAvatarError($event)"
+        class="suggestion-avatar"
+      />
+    </a>
+
+    <div class="suggestion-identity">
+      <a [routerLink]="['/profile', suggestion._id]" class="suggestion-name">
+        {{ suggestion.name }}
+      </a>
+      <p class="suggestion-username">
+        {{ suggestion.username.startsWith('@') ? suggestion.username : '@' + suggestion.username }}
+      </p>
+    </div>
+
+    <button
+      type="button"
+      data-follow-action
+      class="suggestion-follow-button"
+      [class.suggestion-following-button]="isFollowing()"
+      [disabled]="isFollowPending()"
+      [attr.aria-busy]="isFollowPending()"
+      (click)="toggleFollow()"
+    >
+      @if (isFollowPending()) {
+        <i class="fa-solid fa-circle-notch animate-spin" aria-hidden="true"></i>
+      } @else if (isFollowing()) {
+        <i class="fa-solid fa-user-check" aria-hidden="true"></i>
+      } @else {
+        <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+      }
+      <span>{{ isFollowing() ? 'Following' : 'Follow' }}</span>
+    </button>
+  </div>
+
+  <div class="suggestion-meta">
+    <span>{{ followersCount() }} followers</span>
+    @if (suggestion.mutualFollowersCount > 0) {
+      <span>{{ suggestion.mutualFollowersCount }} mutual followers</span>
+    }
+  </div>
+</article>

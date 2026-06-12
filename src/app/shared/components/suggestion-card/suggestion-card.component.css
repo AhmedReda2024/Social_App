@@ -1,0 +1,161 @@
+.suggestion-card {
+  border: 1px solid #dbe3ef;
+  background: #fff;
+}
+
+.suggestion-card-compact {
+  border-radius: 0.75rem;
+  padding: 0.625rem;
+}
+
+.suggestion-card-full {
+  min-height: 8.5rem;
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+
+.suggestion-card-main {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.suggestion-avatar-link {
+  flex-shrink: 0;
+  border-radius: 9999px;
+}
+
+.suggestion-avatar-link:focus-visible,
+.suggestion-name:focus-visible,
+.suggestion-follow-button:focus-visible {
+  outline: 3px solid rgb(147 197 253 / 65%);
+  outline-offset: 2px;
+}
+
+.suggestion-avatar {
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 9999px;
+  object-fit: cover;
+}
+
+.suggestion-card-compact .suggestion-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.suggestion-identity {
+  min-width: 0;
+  flex: 1;
+}
+
+.suggestion-name {
+  display: block;
+  overflow: hidden;
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.suggestion-card-compact .suggestion-name {
+  font-size: 0.875rem;
+}
+
+.suggestion-name:hover {
+  text-decoration: underline;
+}
+
+.suggestion-username {
+  overflow: hidden;
+  margin-top: 0.2rem;
+  color: #64748b;
+  font-size: 0.875rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.suggestion-card-compact .suggestion-username {
+  font-size: 0.75rem;
+}
+
+.suggestion-follow-button {
+  display: inline-flex;
+  min-width: 5.8rem;
+  min-height: 2.25rem;
+  flex-shrink: 0;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  background: #e7f3ff;
+  padding: 0.45rem 0.8rem;
+  color: #1877f2;
+  font-size: 0.8rem;
+  font-weight: 800;
+  transition:
+    background-color 160ms,
+    color 160ms,
+    opacity 160ms;
+}
+
+.suggestion-card-compact .suggestion-follow-button {
+  min-width: 5.25rem;
+  min-height: 2rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+}
+
+.suggestion-follow-button:hover:not(:disabled) {
+  background: #d8ebff;
+}
+
+.suggestion-following-button {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.suggestion-follow-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.suggestion-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  color: #52657c;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.suggestion-card-compact .suggestion-meta {
+  margin-top: 0.5rem;
+  font-size: 0.68rem;
+}
+
+.suggestion-meta span {
+  border-radius: 9999px;
+  background: #f1f5f9;
+  padding: 0.25rem 0.65rem;
+}
+
+@media (max-width: 480px) {
+  .suggestion-card-full {
+    padding: 1rem;
+  }
+
+  .suggestion-card-full .suggestion-avatar {
+    width: 3.1rem;
+    height: 3.1rem;
+  }
+
+  .suggestion-card-full .suggestion-follow-button {
+    min-width: 5.15rem;
+  }
+}

@@ -1,0 +1,28 @@
+@reference "../../../../../styles.css";
+
+@keyframes mobileMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-mobile-menu-in {
+  animation: mobileMenuIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.nav-link {
+  @apply relative flex items-center gap-1.5 rounded-xl px-2.5 py-2 text-sm font-bold transition sm:gap-2 sm:px-3.5;
+}
+
+.nav-link:not(.active) {
+  @apply text-slate-600;
+}
+
+.nav-link:not(.active):hover {
+  @apply bg-white/90 text-slate-900;
+}

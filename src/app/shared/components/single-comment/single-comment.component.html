@@ -1,0 +1,38 @@
+<div class="rounded-2xl border border-slate-200 bg-[#f7f8fa] p-4 flex flex-col gap-3 font-inter mb-4">
+  <!-- Header Label -->
+  <div class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+    Top Comment
+  </div>
+
+  <!-- Comment Row -->
+  <div class="relative flex items-start gap-2">
+    <!-- Commenter Avatar -->
+    <img
+      class="mt-0.5 h-8 w-8 rounded-full object-cover"
+      [src]="comment?.commentCreator?.photo || '/assets/images/default-profile.png'"
+      [alt]="comment?.commentCreator?.name || 'User'"
+    />
+
+    <!-- Comment Bubble -->
+    <div class="min-w-0 flex-1">
+      <div class="relative inline-block max-w-full rounded-2xl bg-[#f0f2f5] px-3 py-2">
+        <p class="text-xs font-bold text-slate-900">
+          {{ comment?.commentCreator?.name || 'User' }}
+        </p>
+        <p class="mt-1 whitespace-pre-wrap text-sm text-slate-800 wrap-break-word font-inter">
+          {{ comment?.content }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Link -->
+  <div class="pl-10">
+    <a
+      (click)="viewAllComments.emit()"
+      class="text-xs font-bold text-[#1877f2] hover:underline cursor-pointer select-none transition-colors"
+    >
+      View all comments
+    </a>
+  </div>
+</div>

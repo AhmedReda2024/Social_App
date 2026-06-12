@@ -1,0 +1,35 @@
+.progress-bar-container-bottom {
+  width: 100%;
+}
+
+.progress-bar-fill-bottom {
+  width: 40%;
+  animation: progressSlideBottom 1.5s infinite ease-in-out;
+}
+
+@keyframes progressSlideBottom {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+/* Custom scrollbar for comments list */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* slate-300 */
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8; /* slate-400 */
+}

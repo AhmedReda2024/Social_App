@@ -1,0 +1,1556 @@
+<div
+  class="relative rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col mb-4 font-inter transition-all duration-200"
+>
+  @if (post.isOptimisticPending) {
+    <!-- Faded loading overlay to block interactions -->
+    <div class="absolute inset-0 bg-white/45 rounded-2xl z-5 pointer-events-auto select-none"></div>
+  }
+  <!-- Post Header -->
+  <div class="flex items-start justify-between p-4">
+    <div class="flex items-center gap-3">
+      <a
+        [routerLink]="authorRoute(post.user._id)"
+        [attr.aria-label]="'View ' + post.user.name + ' profile'"
+        class="shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877f2] focus-visible:ring-offset-2"
+      >
+        <img
+          class="w-10 h-10 rounded-full object-cover shadow-sm border border-slate-100"
+          [src]="post.user.photo"
+          [alt]="post.user.name"
+        />
+      </a>
+      <div class="flex flex-col">
+        <div class="flex items-center gap-1.5">
+          @if (generatedPostLabel(); as generatedLabel) {
+            <p class="text-sm leading-tight text-slate-600">
+              <a
+                [routerLink]="authorRoute(post.user._id)"
+                [attr.aria-label]="'View ' + post.user.name + ' profile'"
+                class="font-extrabold text-slate-900 hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877f2]"
+                >{{ post.user.name }}</a
+              >{{ ' ' + generatedLabel }}
+            </p>
+          } @else {
+            <a
+              [routerLink]="authorRoute(post.user._id)"
+              [attr.aria-label]="'View ' + post.user.name + ' profile'"
+              class="rounded-sm font-extrabold text-slate-900 text-sm leading-tight hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877f2]"
+            >
+              {{ post.user.name }}
+            </a>
+          }
+        </div>
+        <div
+          class="flex items-center gap-1.5 text-[12px] text-slate-500 font-semibold leading-tight mt-0.5"
+        >
+          <span>{{ post.user.username }}</span>
+          <span class="text-slate-300">•</span>
+          <span>{{ post.relativeTime }}</span>
+          <span class="text-slate-300">•</span>
+          <div class="flex items-center gap-0.5 text-slate-500">
+            @if (post.privacy === 'only_me') {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-lock"
+                aria-hidden="true"
+              >
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span class="font-extrabold">Only me</span>
+            } @else if (post.privacy === 'following') {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-users"
+                aria-hidden="true"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <span class="font-extrabold">Followers</span>
+            } @else {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-earth"
+                aria-hidden="true"
+              >
+                <path d="M21.54 15H17a2 2 0 0 0-2 2v4.54"></path>
+                <path
+                  d="M7 3.34V5a3 3 0 0 0 3 3a2 2 0 0 1 2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1.9-2 2-2h3.17"
+                ></path>
+                <path d="M11 21.95V18a2 2 0 0 0-2-2a2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05"></path>
+                <circle cx="12" cy="12" r="10"></circle>
+              </svg>
+              <span class="font-extrabold">Public</span>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="relative">
+      <button
+        (click)="toggleMenu()"
+        class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full transition-colors duration-200 cursor-pointer focus:outline-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-ellipsis"
+        >
+          <circle cx="12" cy="12" r="1"></circle>
+          <circle cx="19" cy="12" r="1"></circle>
+          <circle cx="5" cy="12" r="1"></circle>
+        </svg>
+      </button>
+
+      @if (isMenuOpen()) {
+        <!-- Invisible overlay backdrop to close dropdown when clicking outside -->
+        <div class="fixed inset-0 z-40 cursor-default" (click)="isMenuOpen.set(false)"></div>
+
+        <div
+          class="absolute right-0 z-50 mt-1.5 w-44 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-lg flex flex-col gap-0.5 animate-fade-in font-inter"
+        >
+          <button
+            (click)="onSavePost()"
+            class="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-bookmark text-slate-500 shrink-0"
+            >
+              <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+            </svg>
+            <span>{{ post.bookmarked ? 'Unsave post' : 'Save post' }}</span>
+          </button>
+          @if (isPostOwner()) {
+            <!-- Owner: Save + Edit + Delete -->
+
+            <button
+              (click)="onEditPost()"
+              class="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-pencil text-slate-500 shrink-0"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+              </svg>
+              <span>Edit post</span>
+            </button>
+
+            <div class="my-1 border-t border-slate-100"></div>
+
+            <button
+              (click)="onDeletePost()"
+              class="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-50 cursor-pointer transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-trash-2 text-rose-600 shrink-0"
+              >
+                <path d="M3 6h18" />
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                <line x1="10" x2="10" y1="11" y2="17" />
+                <line x1="14" x2="14" y1="11" y2="17" />
+              </svg>
+              <span>Delete post</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Post Content Text -->
+  <div class="px-4 text-slate-900 text-sm leading-relaxed mb-3">
+    @if (isEditing()) {
+      <div class="flex flex-col gap-2">
+        <textarea
+          #editBodyInput
+          [value]="post.body"
+          rows="3"
+          class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm leading-relaxed text-slate-800 outline-none transition focus:border-[#1877f2] focus:bg-white"
+        ></textarea>
+        <div class="flex justify-end gap-2">
+          <button
+            (click)="isEditing.set(false)"
+            [disabled]="isSaving()"
+            class="px-3.5 py-1.5 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Cancel
+          </button>
+          <button
+            (click)="saveEditedPost(editBodyInput.value)"
+            [disabled]="isSaving()"
+            class="px-3.5 py-1.5 text-xs font-extrabold text-white bg-[#1877f2] hover:bg-[#166fe5] rounded-xl transition shadow-sm cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-75 disabled:cursor-not-allowed"
+          >
+            @if (isSaving()) {
+              <i class="fa-solid fa-circle-notch animate-spin text-[10px]"></i>
+              <span>Saving...</span>
+            } @else {
+              <span>Save</span>
+            }
+          </button>
+        </div>
+      </div>
+    } @else if (!generatedPostLabel()) {
+      {{ post.body }}
+    }
+  </div>
+
+  <!-- if post has saved -->
+  @if (post.bookmarked) {
+    <div class="px-4 pb-3 flex items-center select-none">
+      <div
+        class="inline-flex items-center gap-1 rounded-full bg-[#e7f3ff] px-2.5 py-1 text-[11px] font-bold text-[#1877f2]"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-bookmark"
+          aria-hidden="true"
+        >
+          <path
+            d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"
+          ></path>
+        </svg>
+        <span>Saved</span>
+      </div>
+    </div>
+  }
+
+  <!-- Post Optional Image -->
+  @if (post.image) {
+    <div class="w-full border-t border-b border-slate-100 overflow-hidden bg-slate-50">
+      <img
+        [alt]="post.user.name"
+        class="w-full h-auto max-h-[480px] object-cover transition duration-300 hover:scale-[1.005]"
+        [src]="post.image"
+      />
+    </div>
+  }
+
+  @if (post.sharedPost || post.sharedPostUnavailable) {
+    <div class="mx-4 mb-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+      @if (post.sharedPost; as originalPost) {
+        <div class="p-3">
+          <div class="mb-3 flex items-center gap-2">
+            <a
+              [routerLink]="authorRoute(originalPost.user?._id)"
+              [attr.aria-label]="
+                'View ' + (originalPost.user?.name || 'original post author') + ' profile'
+              "
+              class="shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877f2] focus-visible:ring-offset-2"
+            >
+              <img
+                [src]="originalPost.user?.photo || '/assets/images/default-profile.png'"
+                [alt]="originalPost.user?.name || 'Original post author'"
+                class="h-9 w-9 rounded-full border border-slate-200 object-cover"
+              />
+            </a>
+            <div class="min-w-0">
+              <a
+                [routerLink]="authorRoute(originalPost.user?._id)"
+                [attr.aria-label]="
+                  'View ' + (originalPost.user?.name || 'original post author') + ' profile'
+                "
+                class="block truncate rounded-sm text-sm font-bold text-slate-900 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877f2]"
+              >
+                {{ originalPost.user?.name || 'Unknown user' }}
+              </a>
+              <p class="truncate text-xs text-slate-500">
+                {{
+                  originalPost.user?.username ? '@' + originalPost.user?.username : 'Original post'
+                }}
+              </p>
+            </div>
+            <a
+              [routerLink]="['/post-details', originalPost.id || originalPost._id]"
+              class="ml-auto shrink-0 rounded-lg px-2 py-1 text-xs font-bold text-[#1877f2] transition hover:bg-[#e7f3ff]"
+            >
+              Original Post
+            </a>
+          </div>
+
+          @if (originalPost.body) {
+            <p class="whitespace-pre-line text-sm leading-relaxed text-slate-800">
+              {{ originalPost.body }}
+            </p>
+          }
+        </div>
+
+        @if (originalPost.image) {
+          <img
+            [src]="originalPost.image"
+            [alt]="(originalPost.user?.name || 'Original user') + ' shared post'"
+            class="max-h-[560px] w-full border-t border-slate-200 object-cover"
+          />
+        }
+      } @else {
+        <div class="flex items-center gap-3 p-4 text-sm font-semibold text-slate-500">
+          <i class="fa-regular fa-file-circle-xmark text-lg text-slate-400"></i>
+          <span>Original post is unavailable.</span>
+        </div>
+      }
+    </div>
+  }
+
+  @if (!post.isOptimisticPending) {
+    <!-- Engagement Summary -->
+    <div
+      class="px-4 py-3 flex items-center justify-between text-xs font-semibold text-slate-500 border-t border-slate-100/60"
+    >
+      <div class="flex items-center gap-1.5">
+        <div class="flex items-center justify-center w-5 h-5 bg-[#2563eb] text-white rounded-full">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="10"
+            height="10"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-thumbs-up"
+          >
+            <path
+              d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"
+            ></path>
+          </svg>
+        </div>
+        <span class="hover:underline cursor-pointer">
+          {{ post.likesCount || 0 }} {{ (post.likesCount || 0) === 1 ? 'like' : 'likes' }}
+        </span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span (click)="toggleComments()" class="hover:underline cursor-pointer">
+          {{ post.commentsCount || 0 }}
+          {{ (post.commentsCount || 0) === 1 ? 'comment' : 'comments' }}
+        </span>
+        <span class="hover:underline cursor-pointer">
+          {{ post.sharesCount || 0 }} {{ (post.sharesCount || 0) === 1 ? 'share' : 'shares' }}
+        </span>
+        @if (showDetailsLink) {
+          <span
+            [routerLink]="['/post-details', post.id || post._id]"
+            class="text-[#2563eb] hover:underline cursor-pointer"
+            >View details</span
+          >
+        }
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div
+      class="grid grid-cols-3 gap-1 px-2 py-1.5 border-t border-slate-100/80 bg-slate-50/30 rounded-b-2xl"
+    >
+      <button
+        (click)="toggleLike(post)"
+        [class]="
+          post.isLiked
+            ? 'text-[#2563eb] bg-blue-50/60 font-extrabold'
+            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-bold'
+        "
+        class="flex cursor-pointer items-center justify-center gap-2 py-2 rounded-xl transition duration-150 text-[13px] active:scale-95"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          [attr.fill]="post.isLiked ? 'currentColor' : 'none'"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-thumbs-up"
+        >
+          <path
+            d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"
+          ></path>
+        </svg>
+        <span>Like</span>
+      </button>
+      <button
+        (click)="toggleComments()"
+        class="flex cursor-pointer items-center justify-center gap-2 py-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-bold rounded-xl transition duration-150 text-[13px] active:scale-95"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-message-square"
+        >
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span>Comment</span>
+      </button>
+      <button
+        type="button"
+        aria-label="Share this post"
+        (click)="openShareModal()"
+        class="flex cursor-pointer items-center justify-center gap-2 py-2 text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-bold rounded-xl transition duration-150 text-[13px] active:scale-95"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-share-2"
+        >
+          <circle cx="18" cy="5" r="3"></circle>
+          <circle cx="6" cy="12" r="3"></circle>
+          <circle cx="18" cy="19" r="3"></circle>
+          <line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line>
+          <line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>
+        </svg>
+        <span>Share</span>
+      </button>
+    </div>
+  } @else {
+    <!-- Animated Progress Bar at the bottom of the card while loading -->
+    <div
+      class="progress-bar-container-bottom border-t border-slate-100/60 p-4 flex flex-col justify-center items-center rounded-b-2xl bg-slate-50/10"
+    >
+      <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden relative">
+        <div class="progress-bar-fill-bottom h-full bg-[#1877f2] rounded-full"></div>
+      </div>
+      <span class="text-xs font-extrabold text-[#1877f2] mt-2.5 animate-pulse select-none"
+        >Publishing post...</span
+      >
+    </div>
+  }
+
+  @if (post.topComment && !showComments()) {
+    <div class="px-4 pt-4 border-0 border-t border-slate-100/60">
+      <app-single-comment [comment]="post.topComment" (viewAllComments)="toggleComments()" />
+    </div>
+  }
+
+  <!-- Expanded Comments Section -->
+  @if (showComments()) {
+    <div
+      class="border-t border-slate-200 bg-[#f7f8fa] px-4 py-4 flex flex-col gap-4 font-inter text-slate-700"
+    >
+      <!-- Comments Section Header -->
+      <div
+        class="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2"
+      >
+        <div class="flex items-center gap-2">
+          <p class="text-sm font-extrabold tracking-wide text-slate-700">Comments</p>
+          <span class="rounded-full bg-[#e7f3ff] px-2 py-0.5 text-[11px] font-bold text-[#1877f2]">
+            {{ post.commentsCount || 0 }}
+          </span>
+        </div>
+        <select
+          [value]="sortOrder()"
+          (change)="changeSortOrder($any($event.target).value)"
+          class="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-slate-700 outline-none ring-[#1877f2]/20 focus:border-[#1877f2] focus:bg-white focus:ring-2"
+        >
+          <option value="relevant">Most relevant</option>
+          <option value="newest">Newest</option>
+        </select>
+      </div>
+
+      <!-- Loader for Comments -->
+      @if (isLoadingComments()) {
+        <div class="flex items-center justify-center py-6">
+          <i class="fa-solid fa-circle-notch animate-spin text-blue-600 text-lg"></i>
+          <span class="text-xs font-bold text-slate-400 ml-2 animate-pulse"
+            >Loading comments...</span
+          >
+        </div>
+      }
+
+      <!-- Comments List -->
+      @if (!isLoadingComments() && comments().length > 0) {
+        <div #commentsListScroll class="flex flex-col gap-2 pe-1 custom-scrollbar">
+          @for (
+            comment of showAllComments() ? comments() : comments().slice(0, 5);
+            track comment.id || comment._id
+          ) {
+            <div class="relative flex items-start gap-2">
+              <!-- Avatar -->
+              <img
+                [alt]="comment.commentCreator?.name || 'User'"
+                class="mt-0.5 h-8 w-8 rounded-full object-cover"
+                [src]="comment.commentCreator?.photo || '/assets/images/default-profile.png'"
+              />
+
+              <div class="min-w-0 flex-1">
+                <!-- Comment Bubble -->
+                <div class="relative inline-block max-w-full rounded-2xl bg-[#f0f2f5] px-3 py-2">
+                  <div class="flex items-start justify-between gap-2">
+                    <div>
+                      <p class="text-xs font-bold text-slate-900">
+                        {{ comment.commentCreator?.name || 'User' }}
+                      </p>
+                      <p class="text-xs text-slate-500">
+                        {{
+                          comment.commentCreator?.username
+                            ? '@' + comment.commentCreator.username
+                            : '@user'
+                        }}
+                      </p>
+                    </div>
+                  </div>
+
+                  @if (activeEditingCommentId() === (comment.id || comment._id)) {
+                    <!-- Inline edit view -->
+                    <div class="flex flex-col gap-2 mt-2">
+                      <textarea
+                        rows="2"
+                        [value]="editingCommentText()"
+                        (input)="editingCommentText.set($any($event.target).value)"
+                        class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs leading-normal text-slate-800 outline-none transition focus:border-[#1877f2] font-inter font-medium"
+                      ></textarea>
+                      <div class="flex justify-end gap-1.5">
+                        <button
+                          (click)="activeEditingCommentId.set(null)"
+                          [disabled]="isSavingComment()"
+                          class="px-2.5 py-1 text-[11px] font-bold text-slate-500 hover:bg-slate-200/50 rounded-lg transition cursor-pointer disabled:opacity-50"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          (click)="saveEditedComment(comment)"
+                          [disabled]="isSavingComment() || !editingCommentText().trim()"
+                          class="px-2.5 py-1 text-[11px] font-extrabold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition cursor-pointer flex items-center justify-center gap-1 disabled:opacity-70"
+                        >
+                          @if (isSavingComment()) {
+                            <i class="fa-solid fa-circle-notch animate-spin text-[8px]"></i>
+                            <span>Saving...</span>
+                          } @else {
+                            <span>Save</span>
+                          }
+                        </button>
+                      </div>
+                    </div>
+                  } @else {
+                    <p
+                      class="mt-1 whitespace-pre-wrap text-sm text-slate-800 wrap-break-word font-inter"
+                    >
+                      {{ comment.content }}
+                    </p>
+                  }
+
+                  <!-- Optional Attached Image -->
+                  @if (comment.image) {
+                    <div
+                      class="mt-2 rounded-lg overflow-hidden border border-slate-200 bg-white max-h-[220px]"
+                    >
+                      <img
+                        [src]="comment.image"
+                        alt="Attached comment image"
+                        class="max-h-[220px] w-auto object-contain hover:scale-[1.01] transition duration-200"
+                      />
+                    </div>
+                  }
+                </div>
+
+                <!-- Comment Actions Row -->
+                <div class="mt-1.5 flex items-center justify-between px-1">
+                  <div class="flex items-center gap-4">
+                    <span class="text-xs font-semibold text-slate-400">
+                      {{ comment.relativeTime || getCommentRelativeTime(comment.createdAt) }}
+                    </span>
+                    <button
+                      (click)="onLikeComment(comment)"
+                      [class]="
+                        comment.isLiked
+                          ? 'text-blue-600 font-extrabold'
+                          : 'text-slate-500 hover:text-slate-800'
+                      "
+                      class="text-xs font-semibold hover:underline disabled:opacity-60 transition cursor-pointer active:scale-95"
+                    >
+                      Like ({{ comment.likesCount || comment.likes?.length || 0 }})
+                    </button>
+                    <button
+                      (click)="toggleReplies(comment)"
+                      [class]="
+                        activeReplyCommentId() === (comment.id || comment._id)
+                          ? 'text-[#1877f2] font-extrabold'
+                          : 'text-slate-500 hover:text-[#1877f2]'
+                      "
+                      class="text-xs font-semibold transition hover:underline disabled:opacity-60 hover:text-[#1877f2] cursor-pointer active:scale-95"
+                    >
+                      Reply ({{
+                        repliesList().get(comment.id || comment._id)?.length ??
+                          comment.repliesCount ??
+                          comment.replies?.length ??
+                          0
+                      }})
+                    </button>
+                  </div>
+
+                  <!-- Options menu for owner -->
+                  @if (isCommentOwner(comment)) {
+                    <div class="relative">
+                      <button
+                        (click)="toggleCommentMenu(comment.id || comment._id)"
+                        [disabled]="deletingCommentIds().get(comment.id || comment._id)"
+                        class="rounded-full p-1 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-ellipsis"
+                          aria-hidden="true"
+                        >
+                          <circle cx="12" cy="12" r="1"></circle>
+                          <circle cx="19" cy="12" r="1"></circle>
+                          <circle cx="5" cy="12" r="1"></circle>
+                        </svg>
+                      </button>
+
+                      @if (activeCommentMenuId() === (comment.id || comment._id)) {
+                        <!-- Invisible overlay backdrop to close dropdown when clicking outside -->
+                        <div
+                          class="fixed inset-0 z-40 cursor-default"
+                          (click)="activeCommentMenuId.set(null)"
+                        ></div>
+
+                        <div
+                          class="absolute inset-e-0 mt-1 w-32 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-lg flex flex-col gap-0.5 z-50 animate-fade-in font-inter"
+                        >
+                          <button
+                            (click)="startEditComment(comment)"
+                            class="flex w-full items-center gap-2 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="13"
+                              height="13"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="lucide lucide-pencil text-slate-500 shrink-0"
+                            >
+                              <path d="M12 20h9" />
+                              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                            </svg>
+                            <span>Edit</span>
+                          </button>
+                          <button
+                            (click)="onDeleteComment(comment.id || comment._id)"
+                            class="flex w-full items-center gap-2 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 cursor-pointer transition-colors"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="13"
+                              height="13"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="lucide lucide-trash-2 text-rose-600 shrink-0"
+                            >
+                              <path d="M3 6h18" />
+                              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                              <line x1="10" x2="10" y1="11" y2="17" />
+                              <line x1="14" x2="14" y1="11" y2="17" />
+                            </svg>
+                            <span>Delete</span>
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- Nested Replies Block -->
+                @if (activeReplyCommentId() === (comment.id || comment._id)) {
+                  <div class="pl-6 flex flex-col gap-2 border-l-2 border-[#dce7f6] ml-4 mt-2 pb-2">
+                    <!-- Replies Loader -->
+                    @if (loadingReplies().get(comment.id || comment._id)) {
+                      <div class="flex items-center gap-2 py-1 pl-2">
+                        <i class="fa-solid fa-circle-notch animate-spin text-blue-500 text-xs"></i>
+                        <span class="text-[10px] font-bold text-slate-400">Loading replies...</span>
+                      </div>
+                    }
+
+                    <!-- Nested Replies List -->
+                    @if (!loadingReplies().get(comment.id || comment._id)) {
+                      @if (
+                        !repliesList().get(comment.id || comment._id) ||
+                        repliesList().get(comment.id || comment._id)?.length === 0
+                      ) {
+                        <div class="text-[12px] text-slate-400 font-semibold py-1 pl-2 select-none">
+                          No replies yet.
+                        </div>
+                      } @else {
+                        @for (
+                          reply of repliesList().get(comment.id || comment._id);
+                          track reply._id || reply.id
+                        ) {
+                          <div class="relative flex items-start gap-2 mt-1">
+                            <img
+                              class="mt-0.5 h-7 w-7 rounded-full object-cover"
+                              [src]="
+                                reply.user?.photo ||
+                                reply.commentCreator?.photo ||
+                                '/assets/images/default-profile.png'
+                              "
+                              [alt]="reply.user?.name || 'User'"
+                            />
+                            <div class="min-w-0 flex-1">
+                              <!-- Reply Bubble -->
+                              <div
+                                class="relative inline-block max-w-full rounded-2xl bg-[#f0f2f5] px-3.5 py-2 text-slate-800"
+                              >
+                                <div class="flex flex-col gap-0.5">
+                                  <span
+                                    class="font-extrabold text-[12px] text-slate-900 leading-tight"
+                                  >
+                                    {{ reply.user?.name || reply.commentCreator?.name || 'User' }}
+                                  </span>
+                                  <span
+                                    class="text-[10px] text-slate-400 font-semibold leading-tight"
+                                  >
+                                    {{
+                                      reply.relativeTime || getCommentRelativeTime(reply.createdAt)
+                                    }}
+                                  </span>
+                                </div>
+
+                                @if (activeEditingCommentId() === (reply._id || reply.id)) {
+                                  <!-- Inline edit view for reply -->
+                                  <div class="flex flex-col gap-2 mt-2">
+                                    <textarea
+                                      rows="2"
+                                      [value]="editingCommentText()"
+                                      (input)="editingCommentText.set($any($event.target).value)"
+                                      class="w-full rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs leading-normal text-slate-800 outline-none transition focus:border-[#1877f2] font-inter font-medium"
+                                    ></textarea>
+                                    <div class="flex justify-end gap-1.5">
+                                      <button
+                                        (click)="activeEditingCommentId.set(null)"
+                                        [disabled]="isSavingComment()"
+                                        class="px-2 py-0.5 text-[10px] font-bold text-slate-500 hover:bg-slate-200/50 rounded-md transition cursor-pointer disabled:opacity-50"
+                                      >
+                                        Cancel
+                                      </button>
+                                      <button
+                                        (click)="saveEditedComment(reply)"
+                                        [disabled]="
+                                          isSavingComment() || !editingCommentText().trim()
+                                        "
+                                        class="px-2 py-0.5 text-[10px] font-extrabold text-white bg-blue-600 hover:bg-blue-700 rounded-md transition cursor-pointer flex items-center justify-center gap-1 disabled:opacity-70"
+                                      >
+                                        @if (isSavingComment()) {
+                                          <i
+                                            class="fa-solid fa-circle-notch animate-spin text-[7px]"
+                                          ></i>
+                                          <span>Saving...</span>
+                                        } @else {
+                                          <span>Save</span>
+                                        }
+                                      </button>
+                                    </div>
+                                  </div>
+                                } @else {
+                                  <p
+                                    class="text-[12.5px] text-slate-700 leading-normal mt-2 wrap-break-word font-inter"
+                                  >
+                                    {{ reply.content }}
+                                  </p>
+                                }
+
+                                @if (reply.image) {
+                                  <div
+                                    class="mt-2 rounded-lg overflow-hidden border border-slate-200 bg-white max-h-[160px] inline-block"
+                                  >
+                                    <img
+                                      [src]="reply.image"
+                                      alt="Attached reply image"
+                                      class="max-h-[160px] w-auto object-contain hover:scale-[1.01] transition duration-200"
+                                    />
+                                  </div>
+                                }
+
+                                <!-- Reply Actions -->
+                                <div
+                                  class="mt-2.5 flex items-center gap-2 text-[10.5px] font-extrabold text-slate-500"
+                                >
+                                  <button
+                                    (click)="onLikeComment(reply)"
+                                    [class]="
+                                      reply.isLiked
+                                        ? 'text-blue-600 hover:text-blue-700'
+                                        : 'text-slate-500 hover:text-slate-800'
+                                    "
+                                    class="transition cursor-pointer active:scale-95"
+                                  >
+                                    Like ({{ reply.likesCount || reply.likes?.length || 0 }})
+                                  </button>
+
+                                  <!-- Options menu for reply owner -->
+                                  @if (isCommentOwner(reply)) {
+                                    <div class="relative flex items-center">
+                                      <button
+                                        (click)="toggleCommentMenu(reply._id || reply.id)"
+                                        class="text-slate-400 hover:text-slate-600 transition cursor-pointer focus:outline-none"
+                                      >
+                                        •••
+                                      </button>
+
+                                      @if (activeCommentMenuId() === (reply._id || reply.id)) {
+                                        <!-- Invisible overlay backdrop to close dropdown when clicking outside -->
+                                        <div
+                                          class="fixed inset-0 z-40 cursor-default"
+                                          (click)="activeCommentMenuId.set(null)"
+                                        ></div>
+
+                                        <div
+                                          class="absolute left-0 mt-1 w-32 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-lg flex flex-col gap-0.5 z-50 animate-fade-in font-inter"
+                                        >
+                                          <button
+                                            (click)="startEditComment(reply)"
+                                            class="flex w-full items-center gap-2 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
+                                          >
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="13"
+                                              height="13"
+                                              viewBox="0 0 24 24"
+                                              fill="none"
+                                              stroke="currentColor"
+                                              stroke-width="2"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              class="lucide lucide-pencil text-slate-500 shrink-0"
+                                            >
+                                              <path d="M12 20h9" />
+                                              <path
+                                                d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"
+                                              />
+                                            </svg>
+                                            <span>Edit</span>
+                                          </button>
+                                          <button
+                                            (click)="onDeleteComment(reply._id || reply.id)"
+                                            class="flex w-full items-center gap-2 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 cursor-pointer transition-colors"
+                                          >
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              width="13"
+                                              height="13"
+                                              viewBox="0 0 24 24"
+                                              fill="none"
+                                              stroke="currentColor"
+                                              stroke-width="2"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              class="lucide lucide-trash-2 text-rose-600 shrink-0"
+                                            >
+                                              <path d="M3 6h18" />
+                                              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                              <line x1="10" x2="10" y1="11" y2="17" />
+                                              <line x1="14" x2="14" y1="11" y2="17" />
+                                            </svg>
+                                            <span>Delete</span>
+                                          </button>
+                                        </div>
+                                      }
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        }
+                      }
+                    }
+
+                    <!-- Replying to Header -->
+                    <div
+                      class="text-[11px] text-slate-400 font-semibold pl-2 mt-1 -mb-1 select-none"
+                    >
+                      Replying to {{ comment.commentCreator?.name || 'User' }}
+                    </div>
+
+                    <!-- Reply Form Input Area -->
+                    <div class="flex items-start gap-2 mt-1 w-full">
+                      <img
+                        class="h-7 w-7 rounded-full object-cover"
+                        [src]="getCurrentUser().photo"
+                        [alt]="getCurrentUser().name"
+                      />
+                      <div
+                        class="w-full rounded-2xl border border-slate-200 bg-[#f0f2f5] px-2.5 py-1.5 focus-within:border-[#c7dafc] focus-within:bg-white"
+                      >
+                        <textarea
+                          placeholder="Write a reply..."
+                          rows="1"
+                          [value]="replyTextMap().get(comment.id || comment._id) || ''"
+                          (input)="
+                            updateReplyText(comment.id || comment._id, $any($event.target).value)
+                          "
+                          (keydown.enter)="
+                            $event.preventDefault(); submitReply(comment.id || comment._id)
+                          "
+                          class="max-h-[140px] min-h-[40px] w-full resize-none bg-transparent px-2 py-1.5 text-sm leading-5 outline-none placeholder:text-slate-500 font-inter"
+                        ></textarea>
+
+                        <!-- Selected Reply Image Preview -->
+                        @if (replyImagePreview()) {
+                          <div class="px-2 pb-2 relative flex items-start">
+                            <div
+                              class="relative rounded-lg overflow-hidden border border-slate-200 bg-white max-h-[100px] inline-block"
+                            >
+                              <img
+                                [src]="replyImagePreview()"
+                                alt="Preview attachment"
+                                class="max-h-[100px] w-auto object-contain"
+                              />
+                              <button
+                                (click)="removeReplyImage()"
+                                class="absolute top-1 right-1 flex items-center justify-center w-4 h-4 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white transition cursor-pointer border-0"
+                                title="Remove image"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="8"
+                                  height="8"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="3"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  class="lucide lucide-x"
+                                >
+                                  <path d="M18 6 6 18M6 6l12 12" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        }
+
+                        <div
+                          class="mt-1 flex items-center justify-between border-t border-slate-200/50 pt-1.5"
+                        >
+                          <div class="flex items-center gap-1 relative">
+                            <!-- File Input Trigger for Reply -->
+                            <label
+                              class="inline-flex cursor-pointer items-center justify-center rounded-full p-2 text-slate-500 transition hover:bg-slate-200 hover:text-[#1877f2]"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-image"
+                                aria-hidden="true"
+                              >
+                                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+                                <circle cx="9" cy="9" r="2"></circle>
+                                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+                              </svg>
+                              <input
+                                #replyFileInput
+                                type="file"
+                                accept="image/*"
+                                class="hidden"
+                                (change)="onReplyImageSelected($event)"
+                              />
+                            </label>
+
+                            <!-- Emoji Picker Toggle for Reply -->
+                            <button
+                              type="button"
+                              (click)="toggleReplyEmojiPicker()"
+                              class="inline-flex items-center justify-center rounded-full p-2 text-slate-500 transition hover:bg-slate-200 hover:text-amber-500 border-0"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-smile"
+                                aria-hidden="true"
+                              >
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                <line x1="9" x2="9.01" y1="9" y2="9"></line>
+                                <line x1="15" x2="15.01" y1="9" y2="9"></line>
+                              </svg>
+                            </button>
+
+                            <!-- Emoji Popover for Reply -->
+                            @if (showReplyEmojiPicker()) {
+                              <div
+                                class="fixed inset-0 z-10"
+                                (click)="showReplyEmojiPicker.set(false)"
+                              ></div>
+                              <div
+                                class="absolute bottom-full left-0 z-20 mb-2 p-2 bg-white border border-slate-200 rounded-xl shadow-lg flex gap-1 animate-fade-in"
+                              >
+                                @for (emoji of emojis; track emoji) {
+                                  <button
+                                    (click)="addReplyEmoji(emoji, comment.id || comment._id)"
+                                    class="text-sm p-1 hover:bg-slate-100 rounded-md transition cursor-pointer duration-100 active:scale-90 border-0"
+                                  >
+                                    {{ emoji }}
+                                  </button>
+                                }
+                              </div>
+                            }
+                          </div>
+
+                          <!-- Send Button for Reply -->
+                          <button
+                            [disabled]="
+                              (!(replyTextMap().get(comment.id || comment._id) || '').trim() &&
+                                !replyImagePreview()) ||
+                              submittingReply().get(comment.id || comment._id)
+                            "
+                            (click)="submitReply(comment.id || comment._id)"
+                            class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#1877f2] text-white shadow-sm transition hover:bg-[#166fe5] disabled:cursor-not-allowed disabled:bg-[#9ec5ff] disabled:opacity-100"
+                          >
+                            @if (submittingReply().get(comment.id || comment._id)) {
+                              <i class="fa-solid fa-circle-notch animate-spin text-[10px]"></i>
+                            } @else {
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-send-horizontal"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"
+                                ></path>
+                                <path d="M6 12h16"></path>
+                              </svg>
+                            }
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        @if (comments().length > 5 && !showAllComments()) {
+          <div class="flex justify-center my-4">
+            <button
+              (click)="showAllComments.set(true)"
+              class="border border-slate-200 bg-white hover:bg-slate-50 px-5 py-2 text-xs font-bold text-slate-700 rounded-full transition shadow-xs cursor-pointer inline-flex items-center justify-center"
+            >
+              View more comments
+            </button>
+          </div>
+        }
+      } @else if (!isLoadingComments()) {
+        <!-- No comments prompt -->
+        <div
+          class="flex flex-col items-center justify-center py-6 text-slate-400 border border-dashed border-slate-100 rounded-2xl bg-slate-50/20"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-message-square-dashed text-slate-300 mb-1.5"
+          >
+            <path d="M3 3v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H3Z" />
+            <path d="M8 9h.01" />
+            <path d="M12 9h.01" />
+            <path d="M16 9h.01" />
+            <path d="M8 13h8" />
+            <path d="M8 17h6" />
+          </svg>
+          <span class="text-xs font-bold"
+            >No comments yet. Be the first to share your thoughts!</span
+          >
+        </div>
+      }
+
+      <!-- divider -->
+      <div class="w-full h-px bg-slate-200"></div>
+
+      <!-- Bottom Comment Input Area -->
+      <div class="mt-3">
+        <div class="flex items-start gap-2">
+          <!-- User Avatar -->
+          <img
+            class="h-9 w-9 rounded-full object-cover"
+            [src]="getCurrentUser().photo"
+            [alt]="getCurrentUser().name"
+          />
+
+          <!-- Input Box Content Area -->
+          <div
+            class="w-full rounded-2xl border border-slate-200 bg-[#f0f2f5] px-2.5 py-1.5 focus-within:border-[#c7dafc] focus-within:bg-white"
+            data-comment-mention-root="true"
+          >
+            <!-- Textarea -->
+            <textarea
+              [value]="newCommentText()"
+              (input)="newCommentText.set($any($event.target).value)"
+              (keydown)="onCommentKeydown($event)"
+              [placeholder]="'Comment as ' + getCurrentUser().name + '...'"
+              rows="1"
+              class="max-h-[140px] min-h-[40px] w-full resize-none bg-transparent px-2 py-1.5 text-sm leading-5 outline-none placeholder:text-slate-500 font-inter"
+            ></textarea>
+
+            <!-- Selected Comment Image Preview -->
+            @if (commentImagePreview()) {
+              <div class="px-2 pb-2 relative flex items-start">
+                <div
+                  class="relative rounded-lg overflow-hidden border border-slate-200 bg-white max-h-[120px] inline-block"
+                >
+                  <img
+                    [src]="commentImagePreview()"
+                    alt="Preview attachment"
+                    class="max-h-[120px] w-auto object-contain"
+                  />
+                  <button
+                    (click)="removeCommentImage()"
+                    class="absolute top-1 right-1 flex items-center justify-center w-5 h-5 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white transition cursor-pointer border-0"
+                    title="Remove image"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="10"
+                      height="10"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-x"
+                    >
+                      <path d="M18 6 6 18M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            }
+
+            <div class="mt-1 flex items-center justify-between">
+              <div class="flex items-center gap-1 relative">
+                <!-- File Input Trigger -->
+                <label
+                  class="inline-flex cursor-pointer items-center justify-center rounded-full p-2 text-slate-500 transition hover:bg-slate-200 hover:text-emerald-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-image"
+                    aria-hidden="true"
+                  >
+                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+                    <circle cx="9" cy="9" r="2"></circle>
+                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+                  </svg>
+                  <input
+                    #commentFileInput
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                    (change)="onCommentImageSelected($event)"
+                  />
+                </label>
+
+                <!-- Emoji Popover Toggle -->
+                <button
+                  type="button"
+                  (click)="toggleEmojiPicker()"
+                  class="inline-flex items-center justify-center rounded-full p-2 text-slate-500 transition hover:bg-slate-200 hover:text-amber-500"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-smile"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                    <line x1="9" x2="9.01" y1="9" y2="9"></line>
+                    <line x1="15" x2="15.01" y1="9" y2="9"></line>
+                  </svg>
+                </button>
+
+                <!-- Emoji Popover -->
+                @if (showEmojiPicker()) {
+                  <div class="fixed inset-0 z-10" (click)="showEmojiPicker.set(false)"></div>
+                  <div
+                    class="absolute bottom-full left-0 z-20 mb-2 p-2 bg-white border border-slate-200 rounded-xl shadow-lg flex gap-1 animate-fade-in"
+                  >
+                    @for (emoji of emojis; track emoji) {
+                      <button
+                        (click)="addEmoji(emoji)"
+                        class="text-base p-1 hover:bg-slate-100 rounded-md transition cursor-pointer duration-100 active:scale-90 border-0"
+                      >
+                        {{ emoji }}
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- Send button -->
+              <button
+                [disabled]="
+                  (!newCommentText().trim() && !commentImagePreview()) || isSubmittingComment()
+                "
+                (click)="submitComment()"
+                class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#1877f2] text-white shadow-sm transition hover:bg-[#166fe5] disabled:cursor-not-allowed disabled:bg-[#9ec5ff] disabled:opacity-100 animate-fade-in"
+              >
+                @if (isSubmittingComment()) {
+                  <i class="fa-solid fa-circle-notch animate-spin text-[11px]"></i>
+                } @else {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-send-horizontal"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"
+                    ></path>
+                    <path d="M6 12h16"></path>
+                  </svg>
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Post Modals -->
+
+@if (isShareModalOpen()) {
+  <app-share-post-modal
+    [post]="shareTarget()"
+    (closed)="closeShareModal()"
+    (shared)="onPostShared()"
+  />
+}
+
+@if (isConfirmModalOpen()) {
+  <!-- Dark Backdrop Overlay -->
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs animate-fade-in"
+  >
+    <!-- Modal Dialog Box -->
+    <div
+      class="w-full max-w-[440px] overflow-hidden rounded-2xl bg-white p-5 shadow-2xl animate-zoom-in font-inter mx-4"
+    >
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <span class="text-sm font-extrabold text-slate-800">Confirm action</span>
+        <button
+          (click)="isConfirmModalOpen.set(false)"
+          class="text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg p-1 transition cursor-pointer"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-x"
+          >
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="flex items-start gap-3.5 mb-5">
+        <!-- Circular Warning Icon -->
+        <div
+          class="shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-rose-50 border border-rose-100 text-rose-500"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-alert-triangle"
+          >
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+            <line x1="12" x2="12" y1="9" y2="13" />
+            <line x1="12" x2="12.01" y1="17" y2="17" />
+          </svg>
+        </div>
+        <div class="space-y-1">
+          <h4 class="text-sm font-extrabold text-slate-900">Delete this post?</h4>
+          <p class="text-[12px] text-slate-500 leading-normal">
+            This post will be permanently removed from your profile and feed.
+          </p>
+        </div>
+      </div>
+
+      <!-- Modal Footer Buttons -->
+      <div class="flex items-center justify-end gap-2.5">
+        <button
+          (click)="isConfirmModalOpen.set(false)"
+          class="px-4 py-2 text-xs font-bold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="confirmDelete()"
+          [disabled]="isDeleting()"
+          class="px-4 py-2 text-xs font-bold text-white bg-[#e10034] rounded-xl hover:bg-[#c3002a] transition shadow-sm cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-75 disabled:cursor-not-allowed"
+        >
+          @if (isDeleting()) {
+            <i class="fa-solid fa-circle-notch animate-spin text-[10px]"></i>
+            <span>Deleting...</span>
+          } @else {
+            <span>Delete post</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (isCommentConfirmModalOpen()) {
+  <!-- Dark Backdrop Overlay -->
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs animate-fade-in"
+  >
+    <!-- Modal Dialog Box -->
+    <div
+      class="w-full max-w-[440px] overflow-hidden rounded-2xl bg-white p-5 shadow-2xl animate-zoom-in font-inter mx-4"
+    >
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <span class="text-sm font-extrabold text-slate-800">Confirm action</span>
+        <button
+          (click)="isCommentConfirmModalOpen.set(false)"
+          class="text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg p-1 transition cursor-pointer"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-x"
+          >
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="flex items-start gap-3.5 mb-5">
+        <!-- Circular Warning Icon -->
+        <div
+          class="shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-rose-50 border border-rose-100 text-rose-500"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-alert-triangle"
+          >
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+            <line x1="12" x2="12" y1="9" y2="13" />
+            <line x1="12" x2="12.01" y1="17" y2="17" />
+          </svg>
+        </div>
+        <div class="space-y-1">
+          <h4 class="text-sm font-extrabold text-slate-900">
+            {{ isDeletingReply() ? 'Delete this reply?' : 'Delete this comment?' }}
+          </h4>
+          <p class="text-[12px] text-slate-500 leading-normal">
+            {{
+              isDeletingReply()
+                ? 'This reply will be permanently removed.'
+                : 'This comment will be permanently removed.'
+            }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Modal Footer Buttons -->
+      <div class="flex items-center justify-end gap-2.5">
+        <button
+          (click)="isCommentConfirmModalOpen.set(false)"
+          class="px-4 py-2 text-xs font-bold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="confirmDeleteComment()"
+          [disabled]="deletingCommentIds().get(activeDeletingCommentId() || '')"
+          class="px-4 py-2 text-xs font-bold text-white bg-[#e10034] rounded-xl hover:bg-[#c3002a] transition shadow-sm cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-75 disabled:cursor-not-allowed"
+        >
+          @if (deletingCommentIds().get(activeDeletingCommentId() || '')) {
+            <i class="fa-solid fa-circle-notch animate-spin text-[10px]"></i>
+            <span>Deleting...</span>
+          } @else {
+            <span>{{ isDeletingReply() ? 'Delete reply' : 'Delete comment' }}</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,3 +1,313 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+@theme {
+  --color-primary: #002d84;
+  --color-secondary: #1550d3;
+  --color-surface: #f8f9ff;
+  --color-surface-container-low: #eff4ff;
+  --color-surface-container: #e5eeff;
+  --color-surface-container-high: #dce9ff;
+  --color-surface-container-highest: #d3e4fe;
+  --color-on-surface: #0b1c30;
+  --color-on-surface-variant: #444652;
+  --color-border-subtle: #e2e8f0;
+  --color-background-page: #f0f2f5;
+
+  --font-akt: 'Akt', sans-serif;
+
+  --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-zoom-in: zoom-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes zoom-in {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}
+
+body {
+  background-color: var(--color-background-page);
+  color: var(--color-on-surface);
+  font-family: var(--font-akt);
+}
+
+/* Auth Styles [Register - Login] */
+@layer components {
+  .main-input {
+    @apply w-full rounded-xl border bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-800 outline-none transition focus:bg-white border-slate-200 focus:border-primary;
+  }
+  .main-btn {
+    @apply w-full cursor-pointer mt-4 bg-primary hover:bg-[#0a2040] text-white font-bold py-3.5 px-4 rounded-lg transition-colors duration-200;
+  }
+}
+
+/* Profile media dialogs are global so fixed overlays are not constrained by component style budgets. */
+.profile-cover-actions {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
+  display: flex;
+  max-width: calc(100% - 1.5rem);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.profile-cover-action {
+  display: inline-flex;
+  min-height: 2.25rem;
+  cursor: pointer;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 0.65rem;
+  background: rgb(15 23 42 / 58%);
+  padding: 0.45rem 0.75rem;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  backdrop-filter: blur(8px);
+  transition:
+    background-color 180ms,
+    opacity 180ms;
+}
+
+.profile-cover-action:hover,
+.profile-cover-action:focus-visible {
+  background: rgb(15 23 42 / 78%);
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.profile-avatar-shell {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-avatar-action {
+  position: absolute;
+  bottom: 0.25rem;
+  display: flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  opacity: 1;
+  box-shadow: 0 3px 8px rgb(15 23 42 / 20%);
+  transition:
+    opacity 180ms,
+    background-color 180ms,
+    color 180ms;
+}
+
+.profile-avatar-view {
+  left: 0.15rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #1877f2;
+}
+
+.profile-avatar-change {
+  right: 0.15rem;
+  background: #1877f2;
+  color: #fff;
+}
+
+.profile-avatar-view:hover,
+.profile-avatar-view:focus-visible {
+  background: #f8fafc;
+}
+
+.profile-avatar-change:hover,
+.profile-avatar-change:focus-within {
+  background: #166fe5;
+}
+
+.profile-avatar-action:focus-visible,
+.profile-avatar-change:focus-within {
+  outline: 3px solid #bfdbfe;
+  outline-offset: 2px;
+}
+
+.profile-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(15 23 42 / 68%);
+  backdrop-filter: blur(3px);
+}
+
+.profile-modal-backdrop-dark {
+  background: rgb(2 6 23 / 78%);
+}
+
+.profile-modal-close {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: rgb(15 23 42 / 70%);
+  color: #fff;
+  transition: background-color 180ms;
+}
+
+.profile-modal-close:hover,
+.profile-modal-close:focus-visible {
+  background: rgb(15 23 42 / 92%);
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.profile-dialog {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  background: #fff;
+  padding: 1.25rem;
+  box-shadow: 0 24px 60px rgb(15 23 42 / 32%);
+}
+
+.crop-stage {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  margin-inline: auto;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #e2e8f0;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.crop-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+  transform-origin: center;
+  user-select: none;
+}
+
+.crop-mask {
+  position: absolute;
+  inset: 0.75rem;
+  border: 2px solid rgb(255 255 255 / 92%);
+  border-radius: 9999px;
+  box-shadow: 0 0 0 999px rgb(15 23 42 / 38%);
+  pointer-events: none;
+}
+
+.profile-field-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.profile-select {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.65rem;
+  background: #fff;
+  padding: 0.65rem 0.75rem;
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 700;
+  outline: none;
+}
+
+.profile-select:focus {
+  border-color: #1877f2;
+  box-shadow: 0 0 0 3px rgb(191 219 254 / 65%);
+}
+
+.profile-dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+}
+
+.profile-secondary-button,
+.profile-primary-button,
+.profile-danger-button {
+  display: inline-flex;
+  min-height: 2.5rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border-radius: 0.65rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  transition:
+    background-color 180ms,
+    opacity 180ms;
+}
+
+.profile-secondary-button {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #475569;
+}
+
+.profile-secondary-button:hover {
+  background: #f8fafc;
+}
+
+.profile-primary-button {
+  background: #1877f2;
+  color: #fff;
+}
+
+.profile-primary-button:hover {
+  background: #166fe5;
+}
+
+.profile-danger-button {
+  background: #e11d48;
+  color: #fff;
+}
+
+.profile-danger-button:hover {
+  background: #be123c;
+}
+
+.profile-secondary-button:disabled,
+.profile-primary-button:disabled,
+.profile-danger-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

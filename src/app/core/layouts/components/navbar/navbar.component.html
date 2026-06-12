@@ -1,0 +1,206 @@
+<header class="sticky top-0 z-40 border-b border-slate-200/90 bg-white/95 backdrop-blur font-sans">
+  <div
+    class="mx-auto flex max-w-7xl items-center justify-between gap-2 px-2 py-1.5 sm:gap-3 sm:px-3"
+  >
+    <!-- Left Side -->
+    <div class="flex items-center gap-3">
+      <img alt="Vibely" class="h-9 w-9 rounded-xl object-cover" src="/assets/images/logo.png" />
+      <p class="hidden text-xl font-bold text-slate-900 sm:block">Vibely</p>
+    </div>
+
+    <!-- Center Navigation -->
+    <nav
+      class="flex min-w-0 items-center gap-1 overflow-x-auto rounded-2xl border border-slate-200 bg-slate-50/90 px-1 py-1 sm:px-1.5"
+    >
+      <a
+        routerLink="/feed"
+        routerLinkActive="active bg-white text-secondary shadow-sm"
+        class="nav-link"
+      >
+        <span class="relative">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-house"
+            aria-hidden="true"
+          >
+            <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
+            <path
+              d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+            ></path>
+          </svg>
+        </span>
+        <span class="hidden sm:inline">Feed</span>
+        <span class="sr-only sm:hidden">Feed</span>
+      </a>
+
+      <a
+        routerLink="/profile"
+        routerLinkActive="active bg-white text-secondary shadow-sm"
+        class="nav-link"
+      >
+        <span class="relative">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-user"
+            aria-hidden="true"
+          >
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </span>
+        <span class="hidden sm:inline">Profile</span>
+        <span class="sr-only sm:hidden">Profile</span>
+      </a>
+
+      <a
+        routerLink="/notifications"
+        routerLinkActive="active bg-white text-secondary shadow-sm"
+        class="nav-link"
+      >
+        <span class="relative">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-bell"
+            aria-hidden="true"
+          >
+            <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
+            <path
+              d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"
+            ></path>
+          </svg>
+          @if (unreadCount() > 0) {
+            <span
+              class="absolute -right-2.5 -top-2.5 flex min-w-4.5 items-center justify-center rounded-full border-2 border-slate-50 bg-rose-500 px-1 text-[9px] font-extrabold leading-4 text-white"
+              [attr.aria-label]="unreadCount() + ' unread notifications'"
+            >
+              {{ unreadCount() > 99 ? '99+' : unreadCount() }}
+            </span>
+          }
+        </span>
+        <span class="hidden sm:inline">Notifications</span>
+        <span class="sr-only sm:hidden">Notifications</span>
+      </a>
+    </nav>
+
+    <!-- Right Side -->
+
+    <div class="relative">
+      <button
+        (click)="toggleMobileMenu()"
+        class="flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 py-1.5 transition hover:bg-slate-100"
+      >
+        <img
+          [alt]="currentUser()?.name || 'Profile'"
+          class="h-8 w-8 rounded-full object-cover"
+          [src]="currentUser()?.photo || '/assets/images/default-profile.png'"
+          (error)="onAvatarError($event)"
+        /><span
+          class="hidden max-w-[140px] truncate text-sm font-semibold text-slate-800 md:block"
+          >{{ currentUser()?.name || 'Profile' }}</span
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-menu text-slate-500"
+          aria-hidden="true"
+        >
+          <path d="M4 5h16"></path>
+          <path d="M4 12h16"></path>
+          <path d="M4 19h16"></path>
+        </svg>
+      </button>
+
+      @if (isMobileMenuOpen()) {
+        <div
+          class="absolute right-0 z-50 mt-2 w-52 rounded-xl border border-slate-200 bg-white p-2 shadow-lg flex flex-col gap-0.5"
+        >
+          <a
+            routerLink="/profile"
+            (click)="isMobileMenuOpen.set(false)"
+            class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-user text-slate-500 shrink-0"
+              aria-hidden="true"
+            >
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Profile
+          </a>
+          <a
+            routerLink="/setting"
+            (click)="isMobileMenuOpen.set(false)"
+            class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-settings text-slate-500 shrink-0"
+              aria-hidden="true"
+            >
+              <path
+                d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 0 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"
+              ></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            Settings
+          </a>
+          <div class="my-1 border-t border-slate-200"></div>
+          <button
+            (click)="logout()"
+            class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-50 cursor-pointer text-left focus:outline-none"
+          >
+            Logout
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</header>

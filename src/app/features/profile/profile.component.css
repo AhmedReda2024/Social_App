@@ -1,0 +1,238 @@
+@reference "../../../styles.css";
+
+.profile-shell {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 2rem;
+  background: #fff;
+  box-shadow: 0 10px 15px -3px rgb(15 23 42 / 10%);
+}
+
+.profile-cover {
+  position: relative;
+  height: 300px;
+  background-position: center;
+  background-size: cover;
+}
+
+.profile-cover::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 5rem;
+  background: linear-gradient(to top, rgb(15 23 42 / 22%), transparent);
+  content: '';
+  pointer-events: none;
+}
+
+.profile-card {
+  @apply relative mx-3 -mt-20 rounded-[1.75rem] bg-white/95 px-5 py-7 shadow-sm backdrop-blur sm:mx-8 sm:px-9 lg:px-10;
+}
+
+.profile-avatar {
+  width: 8rem;
+  height: 8rem;
+  flex-shrink: 0;
+  border: 4px solid #fff;
+  border-radius: 9999px;
+  object-fit: cover;
+  box-shadow:
+    0 10px 15px -3px rgb(15 23 42 / 10%),
+    0 0 0 2px #dbeafe;
+}
+
+.stat-card {
+  @apply flex min-h-28 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-center;
+}
+
+.stat-card span,
+.summary-card span {
+  @apply text-xs font-extrabold uppercase tracking-wide text-slate-500;
+}
+
+.stat-card strong {
+  @apply mt-2 text-3xl font-black text-slate-950;
+}
+
+.summary-card {
+  @apply flex min-h-24 flex-col items-start justify-center rounded-2xl border border-blue-200 bg-blue-50/60 px-5 text-left transition hover:bg-blue-50;
+}
+
+.summary-card span {
+  @apply text-blue-800;
+}
+
+.summary-card strong {
+  @apply mt-2 text-2xl font-black text-slate-950;
+}
+
+.posts-tab {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.75rem;
+  padding: 0 1.25rem;
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 800;
+  transition:
+    color 0.2s,
+    background-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.posts-tab i {
+  font-size: 1rem;
+}
+
+.posts-tab:hover {
+  background: #fff;
+  color: #0866ff;
+}
+
+.posts-tab-active {
+  background: #fff;
+  color: #0866ff;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 12%);
+}
+
+.profile-posts-toolbar {
+  display: flex;
+  min-height: 5rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 10%);
+}
+
+.posts-tabs-group {
+  display: inline-flex;
+  padding: 0.375rem;
+  border-radius: 1rem;
+  background: #f1f5f9;
+}
+
+.active-posts-count {
+  display: inline-flex;
+  min-width: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  background: #eff6ff;
+  color: #0866ff;
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+.profile-post-card {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 10%);
+}
+
+.profile-post-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.post-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.post-metric i {
+  color: #0866ff;
+}
+
+.profile-post-state {
+  display: flex;
+  min-height: 14rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 10%);
+}
+
+@media (min-width: 640px) {
+  .profile-cover-actions,
+  .profile-avatar-action {
+    opacity: 0;
+  }
+
+  .profile-cover:hover .profile-cover-actions,
+  .profile-cover:focus-within .profile-cover-actions,
+  .profile-avatar-shell:hover .profile-avatar-action,
+  .profile-avatar-shell:focus-within .profile-avatar-action {
+    opacity: 1;
+  }
+
+  .profile-avatar {
+    width: 9rem;
+    height: 9rem;
+  }
+
+  .profile-post-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .profile-cover {
+    height: 220px;
+  }
+
+  .profile-card {
+    margin-top: -56px;
+  }
+
+  .profile-cover-actions {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .profile-cover-action {
+    min-height: 2rem;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.68rem;
+  }
+
+  .profile-cover-action span {
+    display: none;
+  }
+
+  .profile-posts-toolbar {
+    align-items: stretch;
+  }
+
+  .posts-tabs-group {
+    flex: 1;
+  }
+
+  .posts-tab {
+    flex: 1;
+    justify-content: center;
+    padding-inline: 0.75rem;
+  }
+}
